@@ -11,10 +11,6 @@ Base.metadata.create_all(bind=engine)
 # Crear APP de Fast API
 app = FastAPI(title="Gestión de tareas", version="1.0.0")
 
-# Almacenamiento en memoria
-tasks = {}
-task_counter = 0
-
 # TODO: Implementar endpoints
 # @app.post("/tasks/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 # def crear_tarea(task: TaskCreate):
