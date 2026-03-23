@@ -3,12 +3,13 @@ from typing import List
 from database import engine, Base
 from models import Task
 from schemas import TaskCreate, TaskUpdate, TaskResponse
+from manager import TaskManager
 
 # Crear tabla en la BBDD
 Base.metadata.create_all(bind=engine)
 
 # Crear APP de Fast API
-app = FastAPI(title="Task Management API", version="1.0.0")
+app = FastAPI(title="Gestión de tareas", version="1.0.0")
 
 # Almacenamiento en memoria
 tasks = {}
