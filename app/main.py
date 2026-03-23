@@ -3,6 +3,13 @@ from pydantic import BaseModel, Field
 from datetime import datetime, date
 from typing import List
 
+from database import engine, Base
+from models import Task
+
+# Crear tabla en la BBDD
+Base.metadata.create_all(bind=engine)
+
+# Crear APP de Fast API
 app = FastAPI(title="Task Management API", version="1.0.0")
 
 # Modelos Pydantic
