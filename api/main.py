@@ -14,10 +14,6 @@ app = FastAPI(title="Task Management API", version="1.0.0")
 tasks = {}
 task_counter = 0
 
-# TODO: Implementar clase TaskManager con lógica de negocio
-# class TaskManager:
-#     ...
-
 # TODO: Implementar endpoints
 # @app.post("/tasks/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 # def crear_tarea(task: TaskCreate):
