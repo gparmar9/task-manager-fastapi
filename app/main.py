@@ -1,33 +1,14 @@
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel, Field
-from datetime import datetime, date
 from typing import List
-
 from database import engine, Base
 from models import Task
+from schemas import TaskCreate, TaskUpdate, TaskResponse
 
 # Crear tabla en la BBDD
 Base.metadata.create_all(bind=engine)
 
 # Crear APP de Fast API
 app = FastAPI(title="Task Management API", version="1.0.0")
-
-# Modelos Pydantic
-class TaskCreate(BaseModel):
-    titulo: str = Field(min_length=1, description="Título de la tarea")
-    contenido: str = Field(min_length=1, description="Contenido de la tarea")
-    deadline: date = Field(description="Fecha de vencimiento")
-
-class TaskUpdate(BaseModel):
-    completada: bool = Field(description="Estado de completado")
-
-class TaskResponse(BaseModel):
-    id: int
-    titulo: str
-    contenido: str
-    deadline: date
-    completada: bool
-    fecha_creacion: datetime
 
 # Almacenamiento en memoria
 tasks = {}
