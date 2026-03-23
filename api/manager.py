@@ -1,5 +1,5 @@
-from models import Task
 from datetime import datetime
+from .models import Task
 
 class TaskManager:
 
