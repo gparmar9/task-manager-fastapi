@@ -2,7 +2,6 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy import func
 from .models import Task
-from .database import engine, Base, SessionLocal
 from .schemas import TaskCreate, TaskUpdate, TaskResponse
 
 class TaskManager:

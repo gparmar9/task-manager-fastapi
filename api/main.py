@@ -17,7 +17,7 @@ app = FastAPI(title="Gestión de tareas", version="1.0.0")
 @app.post("/tasks/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 def crear_tarea(task: TaskCreate):
     # Abrimos sesión
-    db = SessionLocal
+    db = SessionLocal()
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
@@ -32,7 +32,7 @@ def crear_tarea(task: TaskCreate):
 @app.get("/tasks/caducadas", response_model=List[TaskResponse])
 def obtener_tareas_caducadas():
     # Abrimos sesión
-    db = SessionLocal
+    db = SessionLocal()
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
@@ -48,7 +48,7 @@ def obtener_tareas_caducadas():
 @app.get("/tasks/{task_id}", response_model=TaskResponse)
 def obtener_tarea_por_id(task_id: int):
     # Abrimos sesión
-    db = SessionLocal
+    db = SessionLocal()
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
@@ -63,7 +63,7 @@ def obtener_tarea_por_id(task_id: int):
 @app.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_tarea(task_id: int):
     # Abrimos sesión
-    db = SessionLocal
+    db = SessionLocal()
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
@@ -77,7 +77,7 @@ def eliminar_tarea(task_id: int):
 @app.put("/tasks/{task_id}/completar", response_model=TaskResponse)
 def completar_tarea(task_id: int):
     # Abrimos sesión
-    db = SessionLocal
+    db = SessionLocal()
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)

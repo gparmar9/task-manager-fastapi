@@ -7,5 +7,4 @@ DATABASE_URL = "sqlite:///./tasks.db"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-SessionLocal = SessionLocal()
 Base = declarative_base()
