@@ -35,11 +35,14 @@ class TaskManager:
         }
 
     def obtener_tarea(self, task_id: int):
+        # Buscar tarea por ID
         tarea = self.db.query(Task).filter(Task.id == task_id).first()
 
+        # Si no existe la tarea lanzamos un error 404
         if not tarea:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarea no encontrada")
         
+        # Devolvemos lo que espera el modelo de Pydantic
         return {
             "id": tarea.id,
             "titulo": tarea.titulo,
@@ -49,8 +52,40 @@ class TaskManager:
             "fecha_creacion": tarea.fecha_creacion
         }
     
-    def complete_task(self, task_id):
-        pass
+    def eliminar_tarea(self, task_id: int):
+        # Buscar tarea por ID
+        tarea = self.db.query(Task).filter(Task.id == task_id).first()
+
+        # Si no existe la tarea lanzamos un error 404
+        if not tarea:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarea no encontrada")
+        
+        # Eliminamos la tarea
+        self.db.delete(tarea)
+        self.db.commit()
+
+    def completar_tarea(self, task_id: int):
+        # Buscar tarea por ID
+        tarea = self.db.query(Task).filter(Task.id == task_id).first()
+
+        # Si no existe la tarea lanzamos un error 404
+        if not tarea:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarea no encontrada")
+        
+        # Marcamos como completada la tarea
+        tarea.completada = True
+        self.db.commit()
+        self.db.refresh(tarea)
+
+        # Devolvemos lo que espera el modelo de Pydantic
+        return {
+            "id": tarea.id,
+            "titulo": tarea.titulo,
+            "contenido": tarea.contenido,
+            "deadline": tarea.deadline,
+            "completada": tarea.completada,
+            "fecha_creacion": tarea.fecha_creacion
+        }
 
     def get_expired_tasks(self):
         pass

@@ -44,9 +44,35 @@ def obtener_tarea_por_id(task_id: int):
     db.close()
     return tarea
 
-# @app.put("/tasks/{task_id}/completar", response_model=TaskResponse)
-# def marcar_completada(task_id: int):
-#     ...
+@app.delete("/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_tarea(task_id: int):
+    # Abrimos sesión
+    db = SessionLocal
+
+    # Instanciamos la clase TaskManager
+    manager = TaskManager(db)
+
+    # Eliminamos la tarea
+    manager.eliminar_tarea(task_id)
+
+    # Cerramos sesion
+    db.close()
+
+@app.put("/tasks/{task_id}/completar", response_model=TaskResponse)
+def completar_tarea(task_id: int):
+    # Abrimos sesión
+    db = SessionLocal
+
+    # Instanciamos la clase TaskManager
+    manager = TaskManager(db)
+
+    # Eliminamos la tarea
+    tarea_completada = manager.completar_tarea(task_id)
+
+    # Cerramos sesion
+    db.close()
+
+    return tarea_completada
 
 # @app.get("/tasks/caducadas", response_model=List[TaskResponse])
 # def obtener_tareas_caducadas():
