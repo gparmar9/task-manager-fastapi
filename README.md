@@ -51,6 +51,7 @@ Devuelve un mensaje indicando que la API está activa.
   "message": "API de gestión de tareas funcionando correctamente"
 }
 ```
+---
 
 ## 🔹 POST /tasks/
 
