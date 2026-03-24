@@ -21,12 +21,28 @@ def crear_tarea(task: TaskCreate):
 
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
+
+    # Creamos tarea
     nueva_tarea = manager.crear_tarea(task)
+
+    # Cerramos sesion
+    db.close()
     return nueva_tarea
 
-# @app.get("/tasks/{task_id}", response_model=TaskResponse)
-# def obtener_tarea(task_id: int):
-#     ...
+@app.get("/tasks/{task_id}", response_model=TaskResponse)
+def obtener_tarea_por_id(task_id: int):
+    # Abrimos sesión
+    db = SessionLocal
+
+    # Instanciamos la clase TaskManager
+    manager = TaskManager(db)
+
+    # Obtenemos la tarea tarea
+    tarea = manager.obtener_tarea(task_id)
+
+    # Cerramos sesion
+    db.close()
+    return tarea
 
 # @app.put("/tasks/{task_id}/completar", response_model=TaskResponse)
 # def marcar_completada(task_id: int):

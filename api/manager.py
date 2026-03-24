@@ -1,4 +1,5 @@
 from datetime import datetime
+from fastapi import HTTPException, status
 from .models import Task
 from .database import engine, Base, SessionLocal
 from .schemas import TaskCreate, TaskUpdate, TaskResponse
@@ -23,7 +24,6 @@ class TaskManager:
         self.db.add(nueva_tarea)
         self.db.commit()
         self.db.refresh(nueva_tarea)
-        self.db.close()
 
         return {
             "id": nueva_tarea.id,
@@ -34,8 +34,20 @@ class TaskManager:
             "fecha_creacion": nueva_tarea.fecha_creacion
         }
 
-    def get_task_by_id(self, task_id):
-        pass
+    def obtener_tarea(self, task_id: int):
+        tarea = self.db.query(Task).filter(Task.id == task_id).first()
+
+        if not tarea:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tarea no encontrada")
+        
+        return {
+            "id": tarea.id,
+            "titulo": tarea.titulo,
+            "contenido": tarea.contenido,
+            "deadline": tarea.deadline,
+            "completada": tarea.completada,
+            "fecha_creacion": tarea.fecha_creacion
+        }
     
     def complete_task(self, task_id):
         pass
