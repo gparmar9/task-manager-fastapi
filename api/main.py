@@ -29,6 +29,22 @@ def crear_tarea(task: TaskCreate):
     db.close()
     return nueva_tarea
 
+@app.get("/tasks/caducadas", response_model=List[TaskResponse])
+def obtener_tareas_caducadas():
+    # Abrimos sesión
+    db = SessionLocal
+
+    # Instanciamos la clase TaskManager
+    manager = TaskManager(db)
+
+    # Eliminamos la tarea
+    tareas_caducadas = manager.obtener_tareas_caducadas()
+
+    # Cerramos sesion
+    db.close()
+
+    return tareas_caducadas
+
 @app.get("/tasks/{task_id}", response_model=TaskResponse)
 def obtener_tarea_por_id(task_id: int):
     # Abrimos sesión
@@ -73,10 +89,6 @@ def completar_tarea(task_id: int):
     db.close()
 
     return tarea_completada
-
-# @app.get("/tasks/caducadas", response_model=List[TaskResponse])
-# def obtener_tareas_caducadas():
-#     ...
 
 @app.get("/")
 def root():

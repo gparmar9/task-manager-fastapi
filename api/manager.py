@@ -1,5 +1,6 @@
 from datetime import datetime
 from fastapi import HTTPException, status
+from sqlalchemy import func
 from .models import Task
 from .database import engine, Base, SessionLocal
 from .schemas import TaskCreate, TaskUpdate, TaskResponse
@@ -87,5 +88,14 @@ class TaskManager:
             "fecha_creacion": tarea.fecha_creacion
         }
 
-    def get_expired_tasks(self):
-        pass
+    def obtener_tareas_caducadas(self):
+        # Cogemos la fecha actual de cuando se lanza la consulta
+        fecha_actual = func.date(datetime.now())
+
+        # Buscamos la lista de tareas caducadas
+        tareas_caducadas = self.db.query(Task).filter(func.date(Task.deadline) < fecha_actual).all()
+
+        # Devolvemos lo que espera el modelo Pydantic
+        return tareas_caducadas
+
+
