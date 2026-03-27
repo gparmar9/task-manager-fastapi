@@ -29,6 +29,22 @@ def crear_tarea(task: TaskCreate):
     db.close()
     return nueva_tarea
 
+@app.get("/alltasks", response_model=List[TaskResponse])
+def obtener_todas_las_tareas():
+    # Abrimos sesión
+    db = SessionLocal()
+
+    # Instanciamos la clase TaskManager
+    manager = TaskManager(db)
+
+    # Obtenemos todas las tareas
+    tareas = manager.obtener_todas_las_tareas()
+
+    # Cerramos sesion
+    db.close()
+
+    return tareas
+
 @app.get("/tasks/caducadas", response_model=List[TaskResponse])
 def obtener_tareas_caducadas():
     # Abrimos sesión
@@ -37,7 +53,7 @@ def obtener_tareas_caducadas():
     # Instanciamos la clase TaskManager
     manager = TaskManager(db)
 
-    # Eliminamos la tarea
+    # Obtenemos las tareas caducadas
     tareas_caducadas = manager.obtener_tareas_caducadas()
 
     # Cerramos sesion

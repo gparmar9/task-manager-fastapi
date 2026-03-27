@@ -97,4 +97,12 @@ class TaskManager:
         # Devolvemos lo que espera el modelo Pydantic
         return tareas_caducadas
 
+    def obtener_todas_las_tareas(self):
+
+        # Buscamos la lista de tareas caducadas
+        tareas = self.db.query(Task).all()
+
+        # Devolvemos lo que espera el modelo Pydantic
+        return tareas
+
 
