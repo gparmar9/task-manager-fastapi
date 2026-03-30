@@ -8,9 +8,6 @@ from .schemas import TaskCreate, TaskUpdate, TaskResponse
 from .manager import TaskManager
 from .logger_config import setup_logger
 
-# Crear tabla en la BBDD
-Base.metadata.create_all(bind=engine)
-
 # Configurar logger
 logger = setup_logger()
 
@@ -20,6 +17,9 @@ app = FastAPI(title="Gestión de tareas", version="1.0.0")
 @app.on_event("startup")
 def startup_event():
     logger.info("Iniciando la API de gestión de tareas")
+    
+    # Crear tabla en la BBDD
+    Base.metadata.create_all(bind=engine)
 
 @app.on_event("shutdown")
 def shutdown_event():
