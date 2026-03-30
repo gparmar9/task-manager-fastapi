@@ -1,0 +1,32 @@
+# Entorno virtual
+venv/
+.env/
+
+# Cachés de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de sistema
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Base de datos local (SQLite antiguo)
+*.db
+
+# Archivos temporales
+*.log
+
+# Configuración IDE
+.vscode/
+.idea/
+
+# Tests (opcional)
+tests/
+
+# Docker (opcional si no quieres copiarlo dentro de la imagen)
+Dockerfile
+docker-compose.yml
