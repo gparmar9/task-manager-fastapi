@@ -1,188 +1,213 @@
-# Task Management API
+# Task Manager — FastAPI
 
-API REST para la gestión de tareas desarrollada con FastAPI.
+Aplicación full-stack para la gestión de tareas. Backend con **FastAPI** y **PostgreSQL**, frontend en HTML/JavaScript puro, todo orquestado con **Docker Compose**.
 
-## Instalación
+## Tecnologías
 
-### 1. Crear entorno virtual
+| Capa | Tecnología |
+|------|-----------|
+| Backend | FastAPI 0.135 + SQLAlchemy 2.0 |
+| Base de datos | PostgreSQL 16 |
+| Frontend | HTML + CSS + JavaScript vanilla |
+| Servidor web | Nginx (reverse proxy) |
+| Contenedores | Docker Compose |
 
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
+---
 
-# Linux/Mac
-python -m venv venv
-source venv/bin/activate
+## Arquitectura
+
+```
+Browser
+  └── :3000  →  Nginx (frontend)
+                  ├── /         → index.html
+                  └── /api/     → FastAPI (:8080)
+                                    └── PostgreSQL (:5432)
 ```
 
-### 2. Instalar dependencias
+Los tres servicios se comunican a través de una red Docker interna. El frontend nunca llama directamente al backend — todas las peticiones pasan por Nginx.
+
+---
+
+## Arrancar con Docker (recomendado)
+
+### Requisitos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y en ejecución
+
+### Pasos
 
 ```bash
+# 1. Clonar el repositorio
+git clone <url-del-repo>
+cd task-manager-fastapi
+
+# 2. Crear el fichero de entorno
+echo "DATABASE_URL=postgresql+psycopg://postgres:masterkey@db:5432/task_manager_fastapi" > .env
+
+# 3. Arrancar todos los servicios
+docker compose up --build
+```
+
+Una vez levantado:
+
+| Servicio | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| API (Swagger UI) | http://localhost:8080/docs |
+| API (ReDoc) | http://localhost:8080/redoc |
+
+Para detener: `docker compose down`
+Para detener y eliminar los datos: `docker compose down -v`
+
+---
+
+## Arrancar en local (sin Docker)
+
+### Requisitos
+- Python 3.11+
+- PostgreSQL en ejecución
+
+```bash
+# 1. Crear y activar entorno virtual
+python -m venv venv
+source venv/bin/activate        # Linux/Mac
+venv\Scripts\activate           # Windows
+
+# 2. Instalar dependencias
 pip install -r requirements.txt
+
+# 3. Configurar la base de datos en .env
+echo "DATABASE_URL=postgresql+psycopg://usuario:contraseña@localhost:5432/task_manager" > .env
+
+# 4. Arrancar la API
+uvicorn api.main:app --reload --port 8000
 ```
 
-### 3. Ejecutar la aplicación
+La API estará disponible en `http://localhost:8000`.
 
-Puedes usar cualquiera de estos comandos:
-
-```bash
-# Opción 1: Comando moderno de FastAPI (recomendado)
-fastapi dev main.py
-
-# Opción 2: Uvicorn tradicional
-uvicorn main:app --reload
-```
-
-La API estará disponible en `http://localhost:8000`
+---
 
 ## Endpoints
 
-## 🔹 GET /
+### `GET /`
+Comprueba que la API está activa.
 
-### Información de la API
-
-Devuelve un mensaje indicando que la API está activa.
-
-### Respuesta
-
+**Respuesta `200`**
 ```json
-{
-  "message": "API de gestión de tareas funcionando correctamente"
-}
+{ "message": "API de gestión de tareas funcionando correctamente" }
 ```
+
 ---
 
-## 🔹 POST /tasks/
-
-### Crear una nueva tarea
-
+### `POST /tasks/`
 Crea una nueva tarea.
 
-### Body
-
+**Body**
 ```json
 {
   "titulo": "Estudiar FastAPI",
-  "contenido": "Repasar endpoints",
-  "deadline": "2026-03-30"
+  "contenido": "Repasar endpoints y schemas",
+  "deadline": "2026-05-01"
 }
 ```
 
-### Respuesta
-
+**Respuesta `201`**
 ```json
 {
   "id": 1,
   "titulo": "Estudiar FastAPI",
-  "contenido": "Repasar endpoints",
-  "deadline": "2026-03-30",
+  "contenido": "Repasar endpoints y schemas",
+  "deadline": "2026-05-01",
   "completada": false,
-  "fecha_creacion": "2026-03-24T10:00:00"
+  "fecha_creacion": "2026-04-08T10:00:00"
 }
 ```
 
-### Errores
-
-- 422 → Datos inválidos
+**Errores:** `422` datos inválidos (título vacío, fecha mal formateada, etc.)
 
 ---
 
-## 🔹 GET /tasks/{task\_id}
+### `GET /alltasks`
+Devuelve todas las tareas.
 
-### Obtener una tarea por ID
+**Respuesta `200`** — array de tareas (misma estructura que arriba)
 
-### Respuesta
+---
 
+### `GET /tasks/{task_id}`
+Devuelve una tarea por su ID.
+
+**Respuesta `200`** — objeto tarea
+
+**Errores:** `404` si no existe
+
+---
+
+### `PUT /tasks/{task_id}/completar`
+Marca una tarea como completada.
+
+**Respuesta `200`**
 ```json
 {
   "id": 1,
   "titulo": "Estudiar FastAPI",
-  "contenido": "Repasar endpoints",
-  "deadline": "2026-03-30",
-  "completada": false,
-  "fecha_creacion": "2026-03-24T10:00:00"
-}
-```
-
-### Errores
-
-- 404 → No encontrada
-
----
-
-## 🔹 DELETE /tasks/{task\_id}
-
-### Eliminar una tarea
-
-### Respuesta
-
-```json
-{
-  "message": "Tarea eliminada correctamente"
-}
-```
-
-### Errores
-
-- 404 → No encontrada
-
----
-
-## 🔹 PUT /tasks/{task\_id}/completar
-
-### Marcar tarea como completada
-
-### Respuesta
-
-```json
-{
-  "id": 1,
-  "titulo": "Estudiar FastAPI",
-  "contenido": "Repasar endpoints",
-  "deadline": "2026-03-30",
+  "contenido": "Repasar endpoints y schemas",
+  "deadline": "2026-05-01",
   "completada": true,
-  "fecha_creacion": "2026-03-24T10:00:00"
+  "fecha_creacion": "2026-04-08T10:00:00"
 }
 ```
 
-### Errores
-
-- 404 → No encontrada
+**Errores:** `404` si no existe
 
 ---
 
-## 🔹 GET /tasks/caducadas
+### `DELETE /tasks/{task_id}`
+Elimina una tarea.
 
-### Obtener tareas caducadas
+**Respuesta `204`** — sin cuerpo
 
-Devuelve tareas cuyo deadline ya ha pasado.
-
-### Respuesta
-
-```json
-[
-  {
-    "id": 2,
-    "titulo": "Tarea vencida",
-    "contenido": "Esto ya pasó",
-    "deadline": "2026-03-20",
-    "completada": false,
-    "fecha_creacion": "2026-03-18T09:00:00"
-  }
-]
-```
+**Errores:** `404` si no existe
 
 ---
 
-## Ejecutar tests
+### `GET /tasks/caducadas`
+Devuelve las tareas cuyo deadline ya ha pasado y no están completadas.
+
+**Respuesta `200`** — array de tareas caducadas
+
+---
+
+## Tests
+
+Los tests son de integración y necesitan la API en ejecución.
 
 ```bash
-python test_api.py
+# Con la app corriendo (Docker o local)
+python tests/test_api.py
 ```
 
-## Documentación interactiva
+Cubren: crear tarea, obtener por ID, completar, obtener caducadas y validación de datos incorrectos.
 
-Una vez ejecutando la aplicación, puedes acceder a:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+---
+
+## Estructura del proyecto
+
+```
+task-manager-fastapi/
+├── api/
+│   ├── main.py          # Rutas y app FastAPI
+│   ├── manager.py       # Lógica de negocio
+│   ├── models.py        # Modelos SQLAlchemy (ORM)
+│   ├── schemas.py       # Schemas Pydantic (validación)
+│   ├── database.py      # Conexión y sesión de BD
+│   └── logger_config.py # Configuración de logging
+├── frontend/
+│   ├── index.html       # SPA con HTML/CSS/JS
+│   ├── nginx.conf       # Reverse proxy config
+│   └── Dockerfile
+├── tests/
+│   └── test_api.py
+├── docker-compose.yml
+├── Dockerfile
+└── requirements.txt
+```
