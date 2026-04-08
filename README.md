@@ -40,8 +40,9 @@ Los tres servicios se comunican a través de una red Docker interna. El frontend
 git clone <url-del-repo>
 cd task-manager-fastapi
 
-# 2. Crear el fichero de entorno
-echo "DATABASE_URL=postgresql+psycopg://postgres:masterkey@db:5432/task_manager_fastapi" > .env
+# 2. Crear el fichero de entorno a partir de la plantilla
+cp .env.example .env
+# Edita .env y rellena tus credenciales antes de continuar
 
 # 3. Arrancar todos los servicios
 docker compose up --build
@@ -76,7 +77,8 @@ venv\Scripts\activate           # Windows
 pip install -r requirements.txt
 
 # 3. Configurar la base de datos en .env
-echo "DATABASE_URL=postgresql+psycopg://usuario:contraseña@localhost:5432/task_manager" > .env
+cp .env.example .env
+# Edita .env con tus credenciales de PostgreSQL local
 
 # 4. Arrancar la API
 uvicorn api.main:app --reload --port 8000
