@@ -25,6 +25,11 @@ def startup_event():
 def shutdown_event():
     logger.info("Apagando la API de gestión de tareas")
 
+@app.get("/")
+def root():
+    logger.info("Accediendo a la raiz de la API")
+    return {"message": "Task Management API"}
+
 @app.post("/tasks/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 def crear_tarea(task: TaskCreate):
     logger.info(f"Creando tarea")
@@ -141,8 +146,3 @@ def completar_tarea(task_id: int):
     logger.info("Tarea completada")
 
     return tarea_completada
-
-@app.get("/")
-def root():
-    logger.info("Accediendo a la raiz de la API")
-    return {"message": "Task Management API"}

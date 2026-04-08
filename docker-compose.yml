@@ -11,6 +11,16 @@ services:
     networks:
       - task_manager_fastapi_network
 
+  frontend:
+    build: ./frontend
+    container_name: task_manager_fastapi_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+    networks:
+      - task_manager_fastapi_network
+
   db:
     image: postgres:16
     container_name: task_manager_fastapi_db
